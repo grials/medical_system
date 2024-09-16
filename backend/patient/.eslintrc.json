@@ -1,0 +1,27 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["prettier"],
+  "plugins": ["prettier"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-use-before-define": [
+      "error",
+      {
+        "classes": false,
+        "functions": false,
+        "variables": true
+      }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "printWidth": 120,
+        "trailingComma": "all"
+      }
+    ]
+  }
+}
