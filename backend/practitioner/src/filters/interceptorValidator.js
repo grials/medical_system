@@ -3,17 +3,10 @@ import { jwtDecode } from 'jwt-decode';
 import logger from '../logger';
 import respondError from '../utils/respondError';
 
-const setLicenseKeyList = (query, licenseKey) => {
-  const newFilter = query.filter
-    ? (query.filter += licenseKey ? ` AND licenseKey:eq:${licenseKey}` : '')
-    : `licenseKey:eq:${licenseKey}`;
-  return licenseKey !== undefined ? Object.assign(query, { filter: newFilter }) : query;
-};
+const setUserSave = (req, userData) => Object.assign(req.body, { _user: userData });
 
-const setLicenseKeySave = (req, userData) =>
-  Object.assign(req.body, { licenseKey: req.headers['licenseKey'], _user: userData });
-export const licenseValidator = async (req, res, next) => {
-  logger.info('license validator');
+export const interceptorValidator = async (req, res, next) => {
+  logger.info('interceptor validator');
   try {
     const authorization = req.headers['authorization'];
 
@@ -21,18 +14,14 @@ export const licenseValidator = async (req, res, next) => {
       const [bearer, token] = authorization.split(' ');
       if (bearer === 'Bearer') {
         const payload = jwtDecode(token);
-        req.headers['licenseKey'] = payload.licenseKey;
-
-        if (payload.licenseStatus === 'cancelled' && req.method !== 'GET') throw '403';
 
         if (req.method === 'POST' || req.method === 'PATCH') {
-          req = setLicenseKeySave(req, {
+          req = setUserSave(req, {
             userId: payload?._id,
             email: payload?.email,
             date: new Date(),
           });
         }
-        if (req.method === 'GET') req.query = setLicenseKeyList(req.query, payload.licenseKey);
       }
     }
 

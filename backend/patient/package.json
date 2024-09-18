@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/grials/medical_system.git#readme",
   "dependencies": {
-    "@grials/medical_system_models": "^1.0.3",
     "@grials/medical_system_crypto": "^1.0.2",
+    "@grials/medical_system_models": "^1.0.4",
     "ajv": "^8.17.1",
     "aws-sdk": "^2.1691.0",
     "axios": "^1.7.7",
@@ -42,6 +42,7 @@
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
     "http-status": "^1.7.4",
+    "ioredis": "^5.4.1",
     "ip": "^2.0.1",
     "json2csv": "^5.0.7",
     "jwt-decode": "^4.0.0",

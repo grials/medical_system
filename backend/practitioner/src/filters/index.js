@@ -1,2 +1,2 @@
 export * from './headerValidator';
-export * from './licenseValidator';
+export * from './interceptorValidator';

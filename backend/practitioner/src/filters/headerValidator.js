@@ -8,7 +8,6 @@ export const headerValidator = (req, res, next) => {
   try {
     ajv.validateData(headersValidationData.$id, req.headers);
   } catch (error) {
-    console.log(error);
     return respondError(logger, res, logData);
   }
   logData = {
@@ -17,7 +16,7 @@ export const headerValidator = (req, res, next) => {
     originalPath: req.originalUrl,
     language: req.headers['accept-language'],
     appVersion: req.headers['l-api-version'],
-    licenseKey: req.headers['licenseKey'],
+    
   };
 
   req.headers.logData = logData;

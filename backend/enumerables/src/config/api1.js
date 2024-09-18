@@ -1,13 +1,13 @@
 import express from 'express';
 import mung from 'express-mung';
-import { ENABLED_ENCRYPT } from './constants';
+import { ENABLED_ENCRYPT, ENCRYPTION_KEY } from './constants';
 import { headerValidator } from '../filters/headerValidator';
-import { licenseValidator } from '../filters/licenseValidator';
+import { interceptorValidator } from '../filters/interceptorValidator';
 import defualtRouter from '../routers/defaultRoute';
 const apiAppV1 = express();
 
 export const decryptInterceptor = mung.json((body, req, res) => {
-  const { licenseKey, path } = req.headers.logData;
+  const { path } = req.headers.logData;
   let data = body?.data || null;
 
   let decryptDoc = null;
@@ -19,10 +19,9 @@ export const decryptInterceptor = mung.json((body, req, res) => {
 
   if (decryptDoc && data) {
     if (Array.isArray(data)) {
-      const cryptoKey = data?.licenseKey || licenseKey;
       return {
         ...body,
-        data: data.map((doc) => (cryptoKey ? decryptDoc(doc, cryptoKey) : doc)),
+        data: data.map((doc) => (ENCRYPTION_KEY ? decryptDoc(doc, ENCRYPTION_KEY) : doc)),
       };
     } else if (data?.docs) {
       return {
@@ -30,16 +29,14 @@ export const decryptInterceptor = mung.json((body, req, res) => {
         data: {
           ...data,
           docs: data?.docs.map((doc) => {
-            const cryptoKey = data?.licenseKey || licenseKey;
-            return cryptoKey ? decryptDoc(doc, cryptoKey) : doc;
+            return ENCRYPTION_KEY ? decryptDoc(doc, ENCRYPTION_KEY) : doc;
           }),
         },
       };
     } else {
-      const cryptoKey = data?.licenseKey || licenseKey;
       return {
         ...body,
-        data: cryptoKey ? decryptDoc(data, cryptoKey) : data,
+        data: ENCRYPTION_KEY ? decryptDoc(data, ENCRYPTION_KEY) : data,
       };
     }
   }
@@ -48,7 +45,7 @@ export const decryptInterceptor = mung.json((body, req, res) => {
 
 export const encryptInterceptor = async (req, res, next) => {
   try {
-    const { licenseKey, method, path } = req.headers.logData;
+    const { method, path } = req.headers.logData;
     let encryptDoc = null;
 
     switch (getBasePath(path)) {
@@ -56,22 +53,18 @@ export const encryptInterceptor = async (req, res, next) => {
         break;
     }
 
-
     if (encryptDoc) {
       if (method === 'POST' || method === 'PATCH') {
-        const cryptoKey = req.body?.licenseKey || licenseKey;
         if (Array.isArray(req.body)) {
-          req.body = req.body.map((item) => encryptDoc(item, cryptoKey));
+          req.body = req.body.map((item) => encryptDoc(item, ENCRYPTION_KEY));
         } else {
-          req.body = encryptDoc(req.body, cryptoKey);
-          console.log(req.body.patient.name);
+          req.body = encryptDoc(req.body, ENCRYPTION_KEY);
         }
       }
     }
 
     next();
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -80,7 +73,7 @@ if (ENABLED_ENCRYPT) {
   apiAppV1.use(encryptInterceptor).use(decryptInterceptor);
 }
 
-apiAppV1.use(licenseValidator);
+apiAppV1.use(interceptorValidator);
 apiAppV1.use(headerValidator);
 apiAppV1.use('/default', defualtRouter);
 

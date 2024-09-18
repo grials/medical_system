@@ -3,6 +3,7 @@ export * from './emailValidate';
 export * from './externalResource';
 export * from './findDataDocument';
 export * from './generateErrorMessage';
+export * from './interceptorMongoDocument';
 export * from './normalizeDate';
 export * from './regex';
 export * from './replaceValuesIntoUrl';

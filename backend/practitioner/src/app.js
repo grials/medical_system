@@ -9,7 +9,7 @@ import { version } from '../package.json';
 import { APP_NAME, APP_PORT } from './config';
 import { v1_0 } from './config/api1';
 import { dbHealth } from './config/db';
-import { licenseValidator } from './filters/licenseValidator';
+import { interceptorValidator } from './filters/interceptorValidator';
 import logger from './logger';
 import sendBlankPage from './resources/serverVerification/sendBlankPage';
 import { swaggerJsDocs } from './swagger';
@@ -42,7 +42,7 @@ app.use('/health', (req, res) =>
 app.use(`/${APP_NAME}/defaults-docs`, serve, setup(swaggerJsDocs));
 
 // Set license validator
-app.use(licenseValidator);
+app.use(interceptorValidator);
 
 // Routers
 app.use(router);
