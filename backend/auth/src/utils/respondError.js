@@ -56,10 +56,11 @@ const respondError = (logger, res, error, logData, html) => {
     error = createError(409, 'Duplicated key');
   }
   if (status < 500) {
-    logger.warn(error.stack);
+    logger.warn(error).debug(error?.stack);
   } else {
-    logger.error(error.stack);
+    logger.error(error).debug(error?.stack);
   }
+
   if (error.toString().match(/\[(.*?)\]/)) {
     code = error.toString().match(/\[(.*?)\]/)[1];
   }

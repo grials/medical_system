@@ -3,10 +3,8 @@ import kafka, { setTopicEnv } from '../../config/kafka';
 import logger from '../../logger';
 
 export const setKafkaConsumer = async () => {
-  const consumer = kafka.consumer({ groupId: 'defaults-group' });
+  const consumer = kafka.consumer({ groupId: 'auth-group' });
   await consumer.connect();
-  // Usually you should be only listening to updates.
-  await consumer.subscribe({ topic: setTopicEnv('defualt-topic') });
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {

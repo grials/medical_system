@@ -5,9 +5,9 @@ export const LOG_LEVEL = process.env.LOG_LEVEL;
 export const ENVIRONMENT = process.env.ENVIRONMENT.toLowerCase();
 export const GATEWAY_URL = `http://${process.env.GATEWAY_HOST}:${process.env.GATEWAY_PORT}`;
 
-export const DB_PROVIDER = process.env.DB_PROVIDER;
-
+// ENCRYPTION
 export const ENABLED_ENCRYPT = process.env.ENABLED_ENCRYPT;
+export const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 // Kafka
 export const KAFKA_BROKERS = process.env.KAFKA_BROKERS?.split(',');
@@ -43,12 +43,13 @@ export const balls = {
   white: '⚪',
 };
 
-export const SCHEMAS_NAMES = [];
+export const SCHEMAS_NAMES = ['user', 'practitionerUser'];
 
 // MongoDb
 export const DB_NAME = process.env.DB_NAME;
 export const DB_HOST = process.env.DB_HOST;
 export const DB_PORT = process.env.DB_PORT;
+export const DB_PROVIDER = process.env.DB_PROVIDER;
 export const DB_PASSWORD = process.env.DB_PASSWORD;
 export const DB_USERNAME = process.env.DB_USERNAME;
 export const DB_SSL = process.env.DB_SSL?.toLowerCase() === 'true' ? true : false;
@@ -60,3 +61,7 @@ export const DB_SECURE_SOCKET = process.env.DB_SECURE_SOCKET?.toLowerCase() === 
 export const REDIS_HOST = process.env.REDIS_HOST;
 export const REDIS_PORT = process.env.REDIS_PORT;
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+export const REDIS_TTL = Number(process.env?.REDIS_TTL) || 300;
+
+// JWT
+export const JWT_SECRET = process.env.JWT_SECRET;

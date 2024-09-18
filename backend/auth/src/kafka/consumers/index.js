@@ -1,3 +1,3 @@
-import * as defaults from './defaults';
+import * as auth from './auth';
 
-export const setKafkaConsumer = async () => Promise.all([defaults.setKafkaConsumer()]);
+export const setKafkaConsumer = async () => Promise.all([auth.setKafkaConsumer()]);
