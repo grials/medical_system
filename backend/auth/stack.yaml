@@ -6,6 +6,21 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./.env
+    ports:
+      - "3000:3000"
+    labels:
+      # Basic labels
+      - "traefik.enable=true"
+      - "traefik.docker.network=medical-system-network"
+      - "traefik.http.services.auth-api.loadbalancer.server.port=3000"
+      # Routers external
+      - "traefik.http.routers.external-auth-api.service=auth-api"
+      - "traefik.http.routers.external-auth-api.rule=PathPrefix(`/auth-service`)"
+      - "traefik.http.routers.external-auth-api.entrypoints=my-external,my-external-secure"
+      # Routers internal
+      - "traefik.http.routers.internal-auth-api.service=auth-api"
+      - "traefik.http.routers.internal-auth-api.rule=PathPrefix(`/auth-service`)"
+      - "traefik.http.routers.internal-auth-api.entrypoints=my-internal"
     environment:
       - KAFKA_BROKERS=kafka-host:9091,kafka-host:9092
       - DB_HOST=mongodb
