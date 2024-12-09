@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  traefik:
+    # The official v3 Traefik docker image
+    image: traefik:v3.1
+    container_name: traefik
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --entrypoints.my-external.address=:80
+      - --entrypoints.my-internal.address=:9090
+      # TLS configuration
+      - --entrypoints.my-external-secure.address=:443
+      - --entrypoints.my-external-secure.http.tls=true
+      - --certificatesresolvers.my-resolver.acme.tlschallenge=true
+      - --certificatesresolvers.my-resolver.acme.email=example@test.com
+      - --certificatesresolvers.my-resolver.acme.storage=/letsencrypt/acme.json
+    ports:
+      # - 7070:6060 # puerto para ping - salud
+      - 81:80 #  main listener
+      - 443:443 #  tls support
+      - 8080:8080 # dashboard
+      # - 9090:9090 # Exposed internal API Gateway
+    networks:
+      - medical-system-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.traefik-api.loadbalancer.server.port=80"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      # # TLS configuration
+      - ./certs:/certs
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./letsencrypt:/letsencrypt
+networks:
+  networks:
+  medical-system-network:
+    external: true

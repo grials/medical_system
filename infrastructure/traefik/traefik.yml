@@ -1,0 +1,44 @@
+entryPoints:
+  my-internal:
+    address: ":9090"
+  my-external:
+    address: ":80"
+  my-external-secure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: my-resolver
+api:
+  insecure: true
+providers:
+  docker: {}
+
+dashboard:
+  enabled: true
+
+traefik:
+  htttp:
+    services:
+      traefik-api:
+        loadBalancer:
+          server:
+            port: 80
+            
+  enabled: true
+  log:
+    level: INFO
+    
+
+certificatesResolvers:
+  my-resolver:
+    acme:
+      email: example@test.com
+      storage: /letsencrypt/acme.json
+      tlsChallenge: {}
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/cert.pem
+        keyFile: /certs/key.pem
